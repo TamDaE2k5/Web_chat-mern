@@ -1,20 +1,24 @@
-const express = require("express");
-const morgan = require("morgan");
-const cors = require("cors");
-const path = require("path");
+import express from "express"
+import dotenv from "dotenv"
+import morgan from "morgan";
+import cors from "cors";
+import authRoutes from "./resource/routes/auth.routes.js"
+import { connectMongoDB } from "./resource/lib/db.js";
+
+dotenv.config( {path :".env"}) // lưu ý là path này tính từ thư mục node => = node_module
+const port = process.env.PORT;
 
 const app = express();
-const port = 5000;
-
 app.use(morgan("dev")); // log
 app.use(cors())
 
-app.get("/api/user", (req, res) => {
-  res.json({ name: "Tam",
-             age : 20
-  }); // tra ve json ten = Tam
-});
+app.get("/", function(req, res){
+  return res.send("Hello World")
+})
+
+app.use("/api/auth", authRoutes)
 
 app.listen(port, () => {
   console.log(`App running at http://localhost:${port}`);
+  connectMongoDB();
 });
